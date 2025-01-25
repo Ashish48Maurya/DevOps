@@ -3,7 +3,7 @@ WORKDIR /user/src/app
 COPY package*.json ./
 RUN npm install
 COPY . .
-CMD [ "npm","start" ]
+CMD [ "node","index.js" ]
 
 # docker build -t server .
 # docker run -p 8000:8000 --name backend -d server
