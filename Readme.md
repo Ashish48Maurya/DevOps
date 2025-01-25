@@ -1,12 +1,22 @@
-### Step 1: IAM Configuration
-- Create a user `eks-admin` with `AdministratorAccess`.
-- Generate Security Credentials: Access Key and Secret Access Key.
-
-### Step 2: EC2 Setup
+### Step 1: EC2 Setup
 - Launch an Ubuntu instance in your favourite region (eg. region `us-west-2`).
 - SSH into the instance from your local machine.
 
-### Step 3: Install AWS CLI v2
+### step 2: Clone Repo containing (Microservices) Frontend and Backend Code
+
+### Step 3: Install Docker
+``` shell
+sudo apt-get update
+sudo apt install docker.io
+docker ps
+sudo chown $USER /var/run/docker.sock
+```
+
+### Step 4: IAM Configuration
+- Create a user `eks-admin` with `AdministratorAccess`.
+- Generate Security Credentials: Access Key and Secret Access Key.
+
+### Step 5: Install AWS CLI v2
 ``` shell
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 sudo apt install unzip
@@ -15,13 +25,7 @@ sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin --update
 aws configure
 ```
 
-### Step 4: Install Docker
-``` shell
-sudo apt-get update
-sudo apt install docker.io
-docker ps
-sudo chown $USER /var/run/docker.sock
-```
+### Step 6: Store Container on AWS ECR 
 
 
 # Container Orchestration and Kubernetes (K8s)
@@ -48,6 +52,13 @@ Container orchestration automates the management of containerized applications. 
 - **Self-Healing**: Restarting or replacing failed containers automatically.  
 - **Resource Allocation**: Optimizing the use of CPU, memory, and other resources.  
 - **Monitoring**: Tracking performance and maintaining logs for debugging and analytics.  
+
+---
+
+
+## Why AWS ECS is Not Ideal
+ECS performs similar tasks to Kubernetes, but with AWS, you're locked into their ecosystem. To use ECS, you need to write deployment and CI/CD configuration code specific to AWS. If you want to deploy your container to other services like DigitalOcean, you'll have to rewrite the configuration code, as the code used in AWS won't work. Additionally, if you've used AWS cloud-native services like Auto Scaling Groups (ASG), Elastic Load Balancing (ELB), or CloudFront, these features are not available in DigitalOcean, so you would need to rewrite many aspects of your infrastructure.
+This is a major drawback of ECS. On the other hand, Kubernetes (K8s) is cloud-agnostic. You write deployment configurations in a standardized format, which can be used across any cloud provider, such as AWS, DigitalOcean, Bare Metal (own servers), or GCP. It works seamlessly across different environments, which is why its architecture is a bit more complex.
 
 ---
 
