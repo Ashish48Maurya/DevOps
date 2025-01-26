@@ -57,6 +57,8 @@ Container orchestration automates the management of containerized applications. 
 ---
 
 ## Simplified AWS ECS Architecture Overview
+![image](https://github.com/Ashish48Maurya/DevOps/blob/master/picture/image.png)
+![image](https://github.com/Ashish48Maurya/DevOps/blob/master/picture/image1.png)
 - **Cluster**
 A Cluster is like a container hub where your applications (in the form of containers) run.
 It groups your compute resources (EC2 instances or Fargate tasks) needed to run the containers.
