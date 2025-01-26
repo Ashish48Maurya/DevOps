@@ -25,7 +25,7 @@ sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin --update
 aws configure
 ```
 
-### You Can Skip all above steps if your local system have aws cli installed
+### You Can Skip all above steps if your local system has aws cli installed
 
 ### Step 6: Store Container on AWS ECR 
 
