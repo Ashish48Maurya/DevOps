@@ -25,8 +25,9 @@ sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin --update
 aws configure
 ```
 
-### Step 6: Store Container on AWS ECR 
+### You Can Skip all above steps if your local system have aws cli installed
 
+### Step 6: Store Container on AWS ECR 
 
 # Container Orchestration and Kubernetes (K8s)
 ## Introduction  
@@ -54,6 +55,34 @@ Container orchestration automates the management of containerized applications. 
 - **Monitoring**: Tracking performance and maintaining logs for debugging and analytics.  
 
 ---
+
+## Simplified AWS ECS Architecture Overview
+- **Cluster**
+A Cluster is like a container hub where your applications (in the form of containers) run.
+It groups your compute resources (EC2 instances or Fargate tasks) needed to run the containers.
+Key Point: A cluster can manage multiple services, which in turn run tasks based on traffic needs.
+- **Services**
+A Service ensures your application (containerized tasks) runs properly.
+It handles:
+Auto-scaling: Adjusts the number of tasks based on load or demand.
+Task Management: Restarts failed tasks and keeps the correct number running.
+Deployment: Runs containers using a set configuration (e.g., container image, environment variables).
+Key Point: Each service manages one or more tasks.
+- **Tasks**
+A Task is the smallest deployable unit in ECS, like a running instance of your containerized app.
+It’s defined by a Task Definition, which specifies:
+Where the container image is stored (e.g., Amazon ECR, Docker Hub).
+Resources it needs (CPU, memory).
+Environment variables and networking settings.
+Key Point: Services run and scale tasks based on traffic.
+- **Workflow**
+Define a Task Definition with your app's container image and settings.
+Create a Service to run and manage tasks using that definition.
+Add the Service to a Cluster to handle deployment, scaling, and task management.
+- **Scaling**
+ECS supports horizontal scaling:
+Automatically adjusts the number of tasks based on performance metrics (e.g., CPU usage, memory).
+Key Point: This ensures apps run smoothly and cost-efficiently.
 
 
 ## Why AWS ECS is Not Ideal
