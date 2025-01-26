@@ -160,7 +160,90 @@ Key Point: This ensures apps run smoothly and cost-efficiently.
 - It provides ultra-low latency for real-time processing, ensuring fast transaction completion.
 - If a server in one Availability Zone fails, NLB instantly routes traffic to healthy servers in other zones.
 
+---
+---
 
+# Deploying a Container on Amazon ECS
+Follow these steps to deploy and manage a container on Amazon ECS:
+
+---
+
+## 1. Create a Cluster
+- Give your cluster a **name** and select the desired **infrastructure**.
+
+---
+
+## 2. Create a Task
+1. **Task Configuration:**
+   - Provide a **task name** and select the infrastructure type.
+   - Set up the container:
+     - **Image URL**: Add the URL of the container image.
+     - **Container Name**: Assign a meaningful name (e.g., `auth-container`).
+     - **Container Port**: Specify the container port to expose.
+     - **Environment Variables**: Add key-value pairs as required.
+
+2. **Health Check Configuration:**
+   - Command: Provide a simple GET endpoint (e.g., `/health` => Response: "Server is up and running").
+   - Interval: Set the interval for health check execution.
+
+---
+
+## 3. Create a Service
+1. **Deployment Configuration:**
+   - Select the **task family** created in the previous step.
+   - Provide a **service name** (e.g., `auth-service`).
+   - Set the **desired tasks**: Number of containers you want to run concurrently for load distribution.
+![image](https://github.com/Ashish48Maurya/DevOps/blob/master/picture/image2.png)
+
+
+2. **Deployment Options:**
+   - Use **Rolling Update** for deployment.
+
+3. **Load Balancer Configuration:**
+   - Select an **Application Load Balancer (ALB)** and assign it a name.
+![image](https://github.com/Ashish48Maurya/DevOps/blob/master/picture/image3.png)
+
+4. **Service Auto Scaling:**
+   - Enable auto-scaling and configure:
+     - **Minimum and Maximum Tasks**: Set the range (e.g., min = 1, max = 5).
+     - **Scaling Policy**: Assign a name.
+     - **ECS Service Metric**: Use **average CPU utilization** with a target value of **70%** (default). 
+       - Example: If CPU utilization reaches 70%, ECS will scale up automatically by adding a new container.
+![image](https://github.com/Ashish48Maurya/DevOps/blob/master/picture/image3.png)
+---
+
+## 4. Access Your Service
+- Once the service is deployed, go to the **Load Balancer** in the AWS Management Console.
+- Copy the **Load Balancer URL** (IP address) to access the service.
+
+---
+
+## 5. Deploy Updated Code
+When you make changes to your code and need to deploy an updated version:
+1. **Push the Updated Image to ECR:**
+   - Build and push the new image (e.g., `v2`) to your ECR repository. This will overwrite the previous version.
+
+2. **Update the Service:**
+   - Go to the service in ECS and check the **Force New Deployment** option to deploy the updated code.
+
+3. **Handling Errors in Updated Code:**
+   - If the new code contains errors and all health checks fail, ECS will roll back to the previous working version (e.g., `v1`) and remove the unhealthy containers.
+
+---
+
+## 6. Clean Up Container Orchestration
+To clean up resources:
+1. Go to the **Service**:
+   - Update the **desired tasks** to `0`.
+   - Update the **minimum tasks** in auto-scaling to `0`.
+
+2. Delete the following in order:
+   - **Service**
+   - **Cluster**
+   - **ECR Repository**
+
+---
+---
 ## Why AWS ECS is Not Ideal
 ECS performs similar tasks to Kubernetes, but with AWS, you're locked into their ecosystem. To use ECS, you need to write deployment and CI/CD configuration code specific to AWS. If you want to deploy your container to other services like DigitalOcean, you'll have to rewrite the configuration code, as the code used in AWS won't work. Additionally, if you've used AWS cloud-native services like Auto Scaling Groups (ASG), Elastic Load Balancing (ELB), or CloudFront, these features are not available in DigitalOcean, so you would need to rewrite many aspects of your infrastructure.
 This is a major drawback of ECS. On the other hand, Kubernetes (K8s) is cloud-agnostic. You write deployment configurations in a standardized format, which can be used across any cloud provider, such as AWS, DigitalOcean, Bare Metal (own servers), or GCP. It works seamlessly across different environments, which is why its architecture is a bit more complex.
