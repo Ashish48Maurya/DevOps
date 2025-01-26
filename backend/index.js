@@ -14,6 +14,10 @@ app.use(cors(
 app.use(express.json());
 app.use('/api',router)
 
+app.get('/health',(req,res)=>{
+    return res.status(200).json({message:"Service is Up and Running"})
+})
+
 app.listen(port, async() => {  
     await mongoConnect();  
     console.log(`Server is running on port ${port}`);
