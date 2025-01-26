@@ -86,6 +86,80 @@ ECS supports horizontal scaling:
 Automatically adjusts the number of tasks based on performance metrics (e.g., CPU usage, memory).
 Key Point: This ensures apps run smoothly and cost-efficiently.
 
+## Application Load Balancer (ALB)
+**Overview**
+- Operates at Layer 7 (Application Layer) of the OSI model.
+- Works with HTTP/HTTPS and WebSocket protocols.
+- Best suited for content-based routing (e.g., routing requests based on URL paths or headers).
+
+**Advantages**
+- Content-Based Routing:
+      Can route traffic based on request paths, host headers, query strings, etc.
+- SSL Termination:
+      Offloads SSL/TLS encryption and decryption from backend servers.
+- WebSocket Support:
+      Supports real-time applications like chat apps.
+- Health Checks:
+      Performs health checks on specific routes, not just the server's IP.
+
+**Disadvantages**
+- Higher Latency:
+      Operates at a higher layer, so it may introduce slightly higher latency compared to NLB.
+- Protocol Limitations:
+      Limited to Layer 7 protocols (HTTP/HTTPS/WebSocket).
+- Cost:
+      May be more expensive compared to NLB for certain workloads.
+
+**Best Suited For**
+- Web Applications: Applications using HTTP/HTTPS protocols.
+- Content-Based Routing: Routing traffic based on URL, headers, or query strings.
+- Real-Time Communication: Supports WebSocket for chat applications or live notifications.
+
+**How ALB Helps**
+- The ALB routes requests as follows:
+- Requests to https://example.com/login are sent to the Authentication Service.
+- Requests to https://example.com/products are sent to the Product Catalog Service.
+- Requests to https://example.com/checkout are sent to the Order Processing Service.
+
+
+## Network Load Balancer (NLB)
+**Overview**
+- Operates at Layer 4 (Transport Layer) of the OSI model.
+- Works with TCP, UDP, and TLS protocols.
+- Designed for ultra-low latency and high performance.
+
+**Advantages**
+- Low Latency:
+      Very fast because it operates at Layer 4 and doesn't inspect request data.
+- Static IP Address:
+      Each NLB can have a static IP or an Elastic IP for predictable endpoints.
+- High Scalability:
+      Can handle millions of requests per second.
+- Cross-Zone Load Balancing:
+      Efficiently distributes traffic across Availability Zones.
+- Health Checks:
+      Monitors the health of backend instances at the network level.
+
+**Disadvantages**
+- Limited Features:
+      No content-based routing or advanced Layer 7 features like ALB.
+- Protocol Specific:
+      Works only with Layer 4 protocols (e.g., TCP/UDP).
+- No SSL Termination:
+      SSL/TLS must be managed by backend services.
+
+
+**Best Suited For**
+- High-Performance Applications: Applications requiring ultra-low latency and high throughput.
+- Protocol Flexibility: Supports TCP, UDP, and TLS for non-HTTP workloads.
+- Gaming Servers: Multiplayer gaming environments where low latency is crucial
+
+**How NLB Helps**
+- The NLB forwards TCP traffic directly to backend servers handling financial transactions.
+- Each client communicates with the application through a static IP (ideal for regulatory compliance and whitelisting).
+- It provides ultra-low latency for real-time processing, ensuring fast transaction completion.
+- If a server in one Availability Zone fails, NLB instantly routes traffic to healthy servers in other zones.
+
 
 ## Why AWS ECS is Not Ideal
 ECS performs similar tasks to Kubernetes, but with AWS, you're locked into their ecosystem. To use ECS, you need to write deployment and CI/CD configuration code specific to AWS. If you want to deploy your container to other services like DigitalOcean, you'll have to rewrite the configuration code, as the code used in AWS won't work. Additionally, if you've used AWS cloud-native services like Auto Scaling Groups (ASG), Elastic Load Balancing (ELB), or CloudFront, these features are not available in DigitalOcean, so you would need to rewrite many aspects of your infrastructure.
