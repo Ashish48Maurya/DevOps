@@ -37,14 +37,6 @@ To address this, Google developed **Borg**, an internal system for managing cont
 
 ---
 
-## What is Kubernetes (K8s)?  
-**Kubernetes (K8s)** is an open-source container orchestration platform inspired by Borg.  
-- Created by engineers like **Joe Beda**, **Brendan Burns**, and **Craig McLuckie**.  
-- Released to the public in **2014**.  
-- Solves the same problems Borg does but is designed for **everyone**, not just Google.  
-
----
-
 ## What is Container Orchestration?  
 Container orchestration automates the management of containerized applications. It handles tasks such as:  
 - **Scaling**: Adjusting the number of containers based on demand.  
@@ -250,6 +242,54 @@ This is a major drawback of ECS. On the other hand, Kubernetes (K8s) is cloud-ag
 
 ---
 
+
+## What is Kubernetes (K8s)?  
+**Kubernetes (K8s)** is an open-source container orchestration platform inspired by Borg.  
+- Created by engineers like **Joe Beda**, **Brendan Burns**, and **Craig McLuckie**.  
+- Released to the public in **2014**.  
+- Solves the same problems Borg does but is designed for **everyone**, not just Google.  
+
+---
+
+## Kubernetes Architecture
+![image](https://github.com/Ashish48Maurya/DevOps/blob/master/picture/k8s.png)
+
+### Control Plane
+The Control Plane is responsible for managing the Kubernetes cluster and ensuring the desired state of the cluster is achieved. A machine with the following components installed is part of the Control Plane:
+
+1. **Controller**: Executes the commands passed by the API Server to ensure the cluster state matches the desired configuration.
+2. **API Server**: Acts as the entry point for all user instructions (configuration) and exposes the Kubernetes API. It communicates with the Controller and serves as the interface for user interaction.
+3. **etcd KV Store (Database)**: A key-value store used by the Controller and API Server to store cluster data and configurations.
+4. **Scheduler**: Assigns pods to physical machines (Worker Nodes) based on the best-fit algorithm. It communicates with the `kubelet` through the API Server to run containers on the Worker Node.
+5. **CCM (Cloud Controller Manager)**: Integrates Kubernetes with the cloud provider to manage load balancers and other cloud resources.
+
+---
+
+### Worker Node
+A Worker Node is a machine where workloads (applications) are deployed and run. A machine with the following components installed is part of the Worker Node:
+
+1. **kubelet**: Acts as an agent on the Worker Node, connected to the API Server. It ensures that the containers specified in a pod are running properly.
+2. **kube-proxy**: Manages networking and traffic rules on the Worker Node. User requests first go to the Load Balancer, then to `kube-proxy`, which routes the request to the appropriate pod.
+3. **CRI (Container Runtime Interface)**: Interfaces with the container runtime to manage containers. It also communicates with the cloud provider's API to create load balancers.
+
+---
+
+### Example Scenarios
+
+1. **Starting Containers**:
+   - If a user instructs the API Server to start 2 containers, the API Server forwards this command to the Controller.
+   - The Controller creates 2 pods, and each pod runs 1 container as specified.
+
+2. **Scaling Pods**:
+   - If a user instructs the API Server to spin up 5 containers:
+     - The API Server checks the `etcd` database to see how many pods are currently running.
+     - If fewer than 5 pods exist, the API Server instructs the Controller to create the remaining pods.
+
+3. **Using a Load Balancer**:
+   - If a user requests to use a Load Balancer, the API Server forwards the command to the CCM, which provisions the Load Balancer through the cloud provider's API.
+
+---
+
 ## Problems Kubernetes Solves  
 
 ### Before Kubernetes  
@@ -270,5 +310,10 @@ Kubernetes automates container orchestration by providing:
 
 ---
 
+
 ## Conclusion  
 Kubernetes revolutionizes container orchestration by automating tasks that previously required manual intervention. With its features like auto-scaling, self-healing, and resource optimization, Kubernetes has become a vital tool for modern software deployment and scalability.
+
+
+
+      
